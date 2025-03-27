@@ -15,10 +15,9 @@ namespace json {
 	};
 	class JsonNumber : public JsonElement {
 	public:
-		long double value;
-		int exp;
-		bool decimal;
-		JsonNumber(long double c_value);
+		long double value = 0;
+		size_t decimal = 0;
+		int exp = 0;
 
 		bool read(JsonInput& in) override;
 		bool write(std::ostream& out) const override;
@@ -26,7 +25,6 @@ namespace json {
 	class JsonString : public JsonElement {
 	public:
 		std::string value;
-		JsonString(std::string_view c_value);
 
 		bool read(JsonInput& in) override;
 		bool write(std::ostream& out) const override;

@@ -14,10 +14,11 @@ int main() {
 	std::stringstream stream(input);
 	json::JsonInput in(&stream);
 
-	json::JsonNumber number(0);
-	number.read(in);
+	json::JsonNumber number;
+	bool res = number.read(in);
 
 	std::cout << "-- Number parsing result --\n";
+	std::cout << "Success: " << std::boolalpha << res << '\n';
 	std::cout << "Value: " << std::setprecision(200) << std::fixed << number.value << '\n';
 	std::cout << "Dec: " << number.decimal << '\n';
 	std::cout << "Exp: " << number.exp << '\n';

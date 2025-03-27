@@ -2,36 +2,40 @@
 #include <cmath>
 
 namespace json {
-	JsonNumber::JsonNumber(long double c_value) : value(c_value) {}
-	JsonString::JsonString(std::string_view c_value) : value(c_value) {}
-
 	bool write_escaped(std::ostream& out, const std::string& value) {
-		static constexpr std::array<std::string, 128> mapping = []() {
-			std::array<std::string, 128> result {};
-			for (int i = 32; i <= 126; i++) {
-				result[i] = std::string(1, (char) i);
-			}
-			result['\\'] = "\\\\";
-			result['"'] = "\\\"";
-			result['\b'] = "\\b";
-			result['\t'] = "\\t";
-			result['\n'] = "\\n";
-			result['\f'] = "\\f";
-			result['\r'] = "\\r";
-
-			return result;
-		}();
 		for (char c : value) {
-			if (mapping[c].empty()) {
-				return false;
+			switch (c) {
+			case '\b':
+				out << "\\\b";
+				break;
+			case '\t':
+				out << "\\\t";
+				break;
+			case '\n':
+				out << "\\\n";
+				break;
+			case '\f':
+				out << "\\\f";
+				break;
+			case '\r':
+				out << "\\\r";
+				break;
+			case '\\':
+			case '"':
+				out << '\\';
+			default:
+				if (c < ' ') {
+					return false;
+				}
+				out << c;
 			}
-			out << mapping[c];
 		}
 		return true;
 	}
 
 	bool JsonNumber::write(std::ostream& out) const {
 		// todo
+		return false;
 	}
 
 	bool JsonString::write(std::ostream& out) const {
@@ -96,7 +100,7 @@ namespace json {
 			return false;
 		}
 
-		bool going = false;
+		bool going = true;
 		while (going && (tmp = in.next())) {
 			switch (tmp) {
 			case '0': case '1': case '2': case '3': case '4':
@@ -109,7 +113,7 @@ namespace json {
 				going = false;
 				break;
 			case '.':
-				this->decimal = true;
+				this->decimal = 1;
 				going = false;
 				break;
 			default:
@@ -125,12 +129,14 @@ namespace json {
 			}
 			going = true;
 			long double multiplier = 0.1;
-			while (going && (tmp == in.next())) {
+			this->decimal = 0;
+			while (going && (tmp = in.next())) {
 				switch (tmp) {
 				case '0': case '1': case '2': case '3': case '4':
 				case '5': case '6': case '7': case '8': case '9':
+					this->decimal += 1;
 					this->value += multiplier * (tmp - '0');
-					multiplier /= 10;
+					multiplier *= 0.1;
 					break;
 				case 'e':
 				case 'E':
@@ -152,7 +158,14 @@ namespace json {
 				in.ptr += 1;
 			}
 			going = true;
-			while (going && (tmp == in.next())) {
+			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
+			peek = in.peek();
+			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
+			peek = in.peek();
+			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
+			std::cerr << "going = " << std::boolalpha << going << '\n';
+			while (going && (tmp = in.next()) != '\0') {
+				std::cerr << "Encountered char = " << tmp << " [" << (int)tmp << "]\n";
 				switch (tmp) {
 				case '0': case '1': case '2': case '3': case '4':
 				case '5': case '6': case '7': case '8': case '9':
@@ -167,6 +180,7 @@ namespace json {
 					break;
 				}
 			}
+			std::cerr << "SC-len = " << len << '\n';
 			if (len == 0) {
 				return false;
 			}
@@ -177,5 +191,15 @@ namespace json {
 		}
 
 		return true;
+	}
+
+	bool JsonString::read(JsonInput& in) {
+		return false;
+	}
+	bool JsonArray::read(JsonInput& in) {
+		return false;
+	}
+	bool JsonObject::read(JsonInput& in) {
+		return false;
 	}
 }
