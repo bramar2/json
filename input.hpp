@@ -11,7 +11,8 @@ namespace json {
 		size_t ptr = 0, available = 0;
 
 		JsonInput(std::istream* c_in);
-		char read();
+		char next();
 		char peek();
+		char next_iw(); // next ignore whitespace
 	};
 }

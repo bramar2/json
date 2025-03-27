@@ -3,7 +3,7 @@
 
 namespace json {
 	JsonInput::JsonInput(std::istream* c_in) : in(c_in) {}
-	char JsonInput::read() {
+	char JsonInput::next() {
 		if (ptr == available) {
 			in->read(buffer, BUFFER_SIZE);
 			ptr = 0;
@@ -20,5 +20,10 @@ namespace json {
 			if (available == 0) return '\0';
 		}
 		return buffer[ptr];
+	}
+	char JsonInput::next_iw() {
+		char res;
+		while (std::isspace( res = next() ));
+		return res;
 	}
 }
