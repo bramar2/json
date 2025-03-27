@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <cmath>
 
 namespace json {
 	JsonNumber::JsonNumber(long double c_value) : value(c_value) {}
@@ -72,6 +73,109 @@ namespace json {
 			}
 		}
 		out << '}';
+		return true;
+	}
+
+	bool JsonNumber::read(JsonInput& in) {
+		this->value = 0;
+		this->exp = 0;
+		bool sign = false, scientific = false;
+
+		char tmp = in.next();
+		if (tmp == '-') {
+			sign = true;
+			tmp = in.next();
+		}
+		if (std::isdigit(tmp)) {
+			this->value = (tmp - '0');
+		} else {
+			return false;
+		}
+		// if zero, next has to be . or e or ending, otherwise it is an extraneous zero (not allowed).
+		if (tmp == '0' && std::isdigit(in.peek())) {
+			return false;
+		}
+
+		bool going = false;
+		while (going && (tmp = in.next())) {
+			switch (tmp) {
+			case '0': case '1': case '2': case '3': case '4':
+			case '5': case '6': case '7': case '8': case '9':
+				this->value = 10 * this->value + (tmp - '0');
+				break;
+			case 'e':
+			case 'E':
+				scientific = true;
+				going = false;
+				break;
+			case '.':
+				this->decimal = true;
+				going = false;
+				break;
+			default:
+				in.ptr -= 1;
+				going = false;
+				break;
+			}
+		}
+
+		if (this->decimal) {
+			if (!std::isdigit(in.peek())) {
+				return false;
+			}
+			going = true;
+			long double multiplier = 0.1;
+			while (going && (tmp == in.next())) {
+				switch (tmp) {
+				case '0': case '1': case '2': case '3': case '4':
+				case '5': case '6': case '7': case '8': case '9':
+					this->value += multiplier * (tmp - '0');
+					multiplier /= 10;
+					break;
+				case 'e':
+				case 'E':
+					scientific = true;
+					going = false;
+					break;
+				default:
+					in.ptr -= 1;
+					going = false;
+					break;
+				}
+			}
+		}
+		if (scientific) {
+			char peek = in.peek();
+			bool exp_sign = (peek == '-');
+			size_t len = 0;
+			if (peek == '-' || peek == '+') {
+				in.ptr += 1;
+			}
+			going = true;
+			while (going && (tmp == in.next())) {
+				switch (tmp) {
+				case '0': case '1': case '2': case '3': case '4':
+				case '5': case '6': case '7': case '8': case '9':
+					if(++len == 4) {
+						return false;
+					}
+					this->exp = 10 * this->exp + (tmp - '0');
+					break;
+				default:
+					in.ptr -= 1;
+					going = false;
+					break;
+				}
+			}
+			if (len == 0) {
+				return false;
+			}
+			if (exp_sign) {
+				this->exp *= -1;
+			}
+			this->value *= std::powl(10, this->exp);
+		}
+
 		return true;
 	}
 }
