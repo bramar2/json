@@ -3,20 +3,44 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 namespace json {
-	class JsonElement {};
-	class JsonInteger : public JsonElement {
+	class JsonElement {
 	public:
-		int64_t value;
-		JsonInteger(int64_t c_value);
+		virtual bool read(std::istream& in, char first);
+		virtual bool write(std::ostream& out) const;
 	};
-	class JsonDecimal : public JsonElement {
+	class JsonNumber : public JsonElement {
 	public:
-		double value;
-		JsonDecimal(double c_value);
+		long double value;
+		int exp;
+		bool point;
+		JsonNumber(long double c_value);
+
+		bool read(std::istream& in, char first) override;
+		bool write(std::ostream& out) const override;
 	};
-	class JsonString : public JsonElement, public std::string {};
-	class JsonArray : public JsonElement, public std::vector<std::unique_ptr<JsonElement>> {};
-	class JsonObject : public JsonElement, public std::unordered_map<std::string, std::unique_ptr<JsonElement>> {};
+	class JsonString : public JsonElement {
+	public:
+		std::string value;
+		JsonString(std::string_view c_value);
+
+		bool read(std::istream& in, char first) override;
+		bool write(std::ostream& out) const override;
+	};
+	class JsonArray : public JsonElement {
+	public:
+		std::vector<std::unique_ptr<JsonElement>> elements;
+
+		bool read(std::istream& in, char first) override;
+		bool write(std::ostream& out) const override;
+	};
+	class JsonObject : public JsonElement {
+	public:
+		std::unordered_map<std::string, std::unique_ptr<JsonElement>> members;
+
+		bool read(std::istream& in, char first) override;
+		bool write(std::ostream& out) const override;
+	};
 }
