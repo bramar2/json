@@ -32,6 +32,41 @@ namespace json {
 		}
 		return true;
 	}
+	std::unique_ptr<JsonElement> parse_unknown(JsonInput& in) {
+		switch (in.next_iw()) {
+		case '0': case '1': case '2': case '3': case '4':
+		case '5': case '6': case '7': case '8': case '9':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonNumber>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
+		case '"':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonString>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
+		case '[':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonArray>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
+		case '{':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonObject>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
+		default:
+			return nullptr;
+		}
+	}
 
 	bool JsonNumber::write(std::ostream& out) const {
 		out << this->value;
@@ -219,26 +254,14 @@ namespace json {
 		while (!end) {
 			ch = in.next_iw();
 			in.ptr -= 1;
-			switch (ch) {
-			case '0': case '1': case '2': case '3': case '4':
-			case '5': case '6': case '7': case '8': case '9':
-				new_elements.push_back(std::make_unique<JsonNumber>());
-				break;
-			case '"':
-				new_elements.push_back(std::make_unique<JsonString>());
-				break;
-			case '[':
-				new_elements.push_back(std::make_unique<JsonArray>());
-				break;
-			case '{':
-				new_elements.push_back(std::make_unique<JsonObject>());
-				break;
-			default:
+
+			std::unique_ptr<JsonElement> element = parse_unknown(in);
+			if (!element) {
 				return false;
 			}
-			if (!new_elements.back()->read(in)) {
-				return false;
-			}
+			new_elements.push_back(std::move(element));
+
+
 			ch = in.next_iw();
 			end = (ch != ',');
 		}
@@ -272,6 +295,41 @@ namespace json {
 	}
 	
 	bool JsonObject::read(JsonInput& in) {
-		return false;
+		if (in.next_iw() != '{') {
+			return false;
+		}
+		std::unordered_map<std::string, std::unique_ptr<JsonElement>> new_members;
+
+		char ch = in.next_iw();
+		bool end = false;
+		if (ch == '}') {
+			end = true;
+		} else {
+			in.ptr -= 1;
+		}
+		JsonString key;
+		while(!end) {
+			ch = in.next_iw();
+			if (ch != '"') {
+				return false;
+			}
+			in.ptr -= 1;
+			key.read(in);
+
+			ch = in.next_iw();
+			if (ch != ':') {
+				return false;
+			}
+
+			std::unique_ptr<JsonElement> value = parse_unknown(in);
+			if (!value) {
+				return false;
+			}
+
+			new_members.emplace(std::move(key.value), std::move(value));
+		}
+
+		this->members = std::move(new_members);
+		return true;
 	}
 }
