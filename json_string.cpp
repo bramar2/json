@@ -31,6 +31,7 @@ namespace json {
 					return false;
 				}
 				out << c;
+				break;
 			}
 		}
 		return true;
