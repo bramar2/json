@@ -83,6 +83,38 @@ namespace json {
 		return true;
 	}
 
+	bool JsonBool::write(std::ostream& out) const {
+		out << (value ? "true" : "false");
+		return true;
+	}
+
+	bool JsonBool::read(JsonInput& in) {
+		static constexpr char true_repr[] = "rue";
+		static constexpr char false_repr[] = "alse";
+		char ch = in.next();
+		switch (ch) {
+		case 't':
+			for (char c : true_repr) {
+				if (in.next() != c) {
+					return false;
+				}
+			}
+			this->value = true;
+			break;
+		case 'f':
+			for (char c : false_repr) {
+				if (in.next() != c) {
+					return false;
+				}
+			}
+			this->value = false;
+			break;
+		default:
+			return false;
+		}
+		return true;
+	}
+
 	bool JsonNumber::write(std::ostream& out) const {
 		out << this->value;
 		return true;

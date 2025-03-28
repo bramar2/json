@@ -22,6 +22,13 @@ namespace json {
 		bool write(std::ostream& out) const;
 	};
 
+	class JsonBool : public JsonElement {
+	public:
+		bool value = false;
+
+		bool read(JsonInput& in) override;
+		bool write(std::ostream& out) const override;
+	};
 
 	class JsonNumber : public JsonElement {
 	private:
