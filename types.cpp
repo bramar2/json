@@ -68,6 +68,21 @@ namespace json {
 		}
 	}
 
+	bool JsonNull::write(std::ostream& out) const {
+		out << "null";
+		return true;
+	}
+
+	bool JsonNull::read(JsonInput& in) {
+		static constexpr char representation[] = "null";
+		for (char ch : representation) {
+			if (in.next() != ch) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	bool JsonNumber::write(std::ostream& out) const {
 		out << this->value;
 		return true;

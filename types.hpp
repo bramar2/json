@@ -14,6 +14,15 @@ namespace json {
 		virtual bool read(JsonInput& in) = 0;
 		virtual bool write(std::ostream& out) const = 0;
 	};
+
+
+	class JsonNull : public JsonElement {
+	public:
+		bool read(JsonInput& in);
+		bool write(std::ostream& out) const;
+	};
+
+
 	class JsonNumber : public JsonElement {
 	private:
 		std::string value = "0";
