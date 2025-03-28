@@ -63,6 +63,21 @@ namespace json {
 				if (!ptr->read(in)) return nullptr;
 				return ptr;
 			}
+		case 'n':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonNull>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
+		case 't':
+		case 'f':
+			{
+				in.ptr -= 1;
+				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonBool>();
+				if (!ptr->read(in)) return nullptr;
+				return ptr;
+			}
 		default:
 			return nullptr;
 		}
