@@ -210,8 +210,12 @@ namespace json {
 		std::vector<std::unique_ptr<JsonElement>> new_elements;
 
 		char ch = in.next_iw();
-		bool end = ch != ']';
-
+		bool end = false;
+		if (ch == ']') {
+			end = true;
+		} else {
+			in.ptr -= 1;
+		}
 		while (!end) {
 			ch = in.next_iw();
 			in.ptr -= 1;
@@ -232,10 +236,12 @@ namespace json {
 			default:
 				return false;
 			}
-			if (!new_elements.back()->read(in)) return false;
-			end = (in.next_iw() != ',');
+			if (!new_elements.back()->read(in)) {
+				return false;
+			}
+			ch = in.next_iw();
+			end = (ch != ',');
 		}
-
 		if (ch != ']') {
 			return false;
 		}
