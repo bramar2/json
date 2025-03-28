@@ -142,7 +142,8 @@ namespace json {
 			}
 			switch (ch) {
 			case '\\':
-				switch ( (ch = in.next()) ) {
+				ch = in.next();
+				switch (ch = in.next()) {
 				case 'b':
 					newValue.push_back('\b');
 					break;
@@ -201,6 +202,48 @@ namespace json {
 		out << ']';
 		return true;
 	}
+
+	bool JsonArray::read(JsonInput& in) {
+		if (in.next_iw() != '[') {
+			return false;
+		}
+		std::vector<std::unique_ptr<JsonElement>> new_elements;
+
+		char ch = in.next_iw();
+		bool end = ch != ']';
+
+		while (!end) {
+			ch = in.next_iw();
+			in.ptr -= 1;
+			switch (ch) {
+			case '0': case '1': case '2': case '3': case '4':
+			case '5': case '6': case '7': case '8': case '9':
+				new_elements.push_back(std::make_unique<JsonNumber>());
+				break;
+			case '"':
+				new_elements.push_back(std::make_unique<JsonString>());
+				break;
+			case '[':
+				new_elements.push_back(std::make_unique<JsonArray>());
+				break;
+			case '{':
+				new_elements.push_back(std::make_unique<JsonObject>());
+				break;
+			default:
+				return false;
+			}
+			if (!new_elements.back()->read(in)) return false;
+			end = (in.next_iw() != ',');
+		}
+
+		if (ch != ']') {
+			return false;
+		}
+
+		this->elements = std::move(new_elements);
+		return true;
+	}
+
 	bool JsonObject::write(std::ostream& out) const {
 		out << '{';
 		if (!this->members.empty()) {
@@ -221,10 +264,7 @@ namespace json {
 		out << '}';
 		return true;
 	}
-
-	bool JsonArray::read(JsonInput& in) {
-		return false;
-	}
+	
 	bool JsonObject::read(JsonInput& in) {
 		return false;
 	}
