@@ -29,6 +29,8 @@ namespace json {
 		operator float() const;
 		operator double() const;
 		operator long double() const;
+
+		std::string to_string() const;
 	};
 	class JsonString : public JsonElement {
 	public:

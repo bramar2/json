@@ -71,7 +71,7 @@ namespace json {
 			case 'E':
 				if (!exp) {
 					exp = true;
-					newValue.push_back('e');
+					newValue.push_back(ch);
 					if (char peek = in.peek(); peek == '-' || peek == '+') {
 						newValue.push_back(peek);
 						in.ptr += 1;
@@ -118,6 +118,9 @@ namespace json {
 	JsonNumber::operator long double() const {
 		return std::stold(this->value);
 	}
+	std::string JsonNumber::to_string() const {
+		return this->value;
+	}
 
 
 	bool JsonString::write(std::ostream& out) const {
@@ -125,6 +128,9 @@ namespace json {
 		if (!write_escaped(out, this->value)) return false;
 		out << '"';
 		return true;
+	}
+	bool JsonString::read(JsonInput& in) {
+		return false;
 	}
 
 	bool JsonArray::write(std::ostream& out) const {
@@ -162,9 +168,6 @@ namespace json {
 		return true;
 	}
 
-	bool JsonString::read(JsonInput& in) {
-		return false;
-	}
 	bool JsonArray::read(JsonInput& in) {
 		return false;
 	}
