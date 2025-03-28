@@ -161,6 +161,9 @@ namespace json {
 				case '\\':
 					newValue.push_back('\\');
 					break;
+				case '/':
+					newValue.push_back('/');
+					break;
 				case '"':
 					newValue.push_back('"');
 					break;
@@ -176,6 +179,10 @@ namespace json {
 				break;
 			}
 		}
+		if (!end) {
+			return false;
+		}
+
 		this->value = std::move(newValue);
 		return true;
 	}
