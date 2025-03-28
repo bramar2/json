@@ -16,8 +16,8 @@ namespace json {
 	class JsonNumber : public JsonElement {
 	public:
 		long double value = 0;
-		size_t decimal = 0;
 		int exp = 0;
+		unsigned char decimal = 0;
 
 		bool read(JsonInput& in) override;
 		bool write(std::ostream& out) const override;

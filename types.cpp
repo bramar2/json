@@ -34,7 +34,7 @@ namespace json {
 	}
 
 	bool JsonNumber::write(std::ostream& out) const {
-		// todo
+		long double val = this->value
 		return false;
 	}
 
@@ -129,12 +129,12 @@ namespace json {
 			}
 			going = true;
 			long double multiplier = 0.1;
-			this->decimal = 0;
+			size_t cnt = 0;
 			while (going && (tmp = in.next())) {
 				switch (tmp) {
 				case '0': case '1': case '2': case '3': case '4':
 				case '5': case '6': case '7': case '8': case '9':
-					this->decimal += 1;
+					cnt += 1;
 					this->value += multiplier * (tmp - '0');
 					multiplier *= 0.1;
 					break;
@@ -148,6 +148,11 @@ namespace json {
 					going = false;
 					break;
 				}
+			}
+			if (cnt > 20) {
+				this->decimal = 20;
+			} else {
+				this->decimal = static_cast<unsigned char>(cnt);
 			}
 		}
 		if (scientific) {
