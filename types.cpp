@@ -316,6 +316,10 @@ namespace json {
 			in.ptr -= 1;
 			key.read(in);
 
+			if (new_members.count(key.value)) {
+				return false;
+			}
+
 			ch = in.next_iw();
 			if (ch != ':') {
 				return false;
