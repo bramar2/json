@@ -113,4 +113,16 @@ namespace json {
 		this->value = std::move(newValue);
 		return true;
 	}
+
+	bool JsonString::set(std::string_view newValue) {
+		if (valid(newValue)) {
+			value = newValue;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	const std::string& JsonString::str() {
+		return this->value;
+	}
 }
