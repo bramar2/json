@@ -21,9 +21,11 @@ namespace json {
 				out << "\\\r";
 				break;
 			case '\\':
-				[[fallthrough]];
+				out << "\\\\";
+				break;
 			case '"':
-				out << '\\';
+				out << "\\\"";
+				break;
 			default:
 				if (c < ' ') {
 					return false;
