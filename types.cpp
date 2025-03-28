@@ -131,6 +131,9 @@ namespace json {
 		}
 		return true;
 	}
+	JsonBool::operator bool() const {
+		return this->value;
+	}
 
 	bool JsonNumber::write(std::ostream& out) const {
 		out << this->value;

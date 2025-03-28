@@ -28,6 +28,8 @@ namespace json {
 
 		bool read(JsonInput& in) override;
 		bool write(std::ostream& out) const override;
+
+		operator bool() const;
 	};
 
 	class JsonNumber : public JsonElement {
