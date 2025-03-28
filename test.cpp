@@ -1,7 +1,7 @@
 #include "json.hpp"
+#include "types.hpp"
 	
 #include <iostream>
-#include <iomanip>
 #include <sstream>
 
 
@@ -14,14 +14,16 @@ int main() {
 	std::stringstream stream(input);
 	json::JsonInput in(&stream);
 
-	json::JsonNumber number;
-	bool res = number.read(in);
+	json::JsonString obj;
+	bool res = obj.read(in);
 
-	std::cout << "-- Number parsing result --\n";
+	std::cout << "-- Parsing result --\n";
 	std::cout << "Success: " << std::boolalpha << res << '\n';
-	std::cout << "Value: " << std::setprecision(200) << std::fixed << number.value << '\n';
-	std::cout << "Dec: " << number.decimal << '\n';
-	std::cout << "Exp: " << number.exp << '\n';
+	std::cout << "Value: " << obj.value << '\n';
+	std::cout << "-- Writing result --\n";
+	std::cout << "Result: ";
+	res = obj.write(std::cout);
+	std::cout << "\nSuccess: " << std::boolalpha << res << '\n';
 
 	return 0;
 }
