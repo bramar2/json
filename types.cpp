@@ -74,7 +74,7 @@ namespace json {
 	}
 
 	bool JsonNull::read(JsonInput& in) {
-		static constexpr char representation[] = "null";
+		static constexpr std::string_view representation = "null";
 		for (char ch : representation) {
 			if (in.next() != ch) {
 				return false;
@@ -89,13 +89,14 @@ namespace json {
 	}
 
 	bool JsonBool::read(JsonInput& in) {
-		static constexpr char true_repr[] = "rue";
-		static constexpr char false_repr[] = "alse";
+		static constexpr std::string_view true_repr = "rue";
+		static constexpr std::string_view false_repr = "alse";
 		char ch = in.next();
 		switch (ch) {
 		case 't':
 			for (char c : true_repr) {
 				if (in.next() != c) {
+					std::cerr << "fail at char = " << c << '\n';
 					return false;
 				}
 			}
@@ -104,6 +105,7 @@ namespace json {
 		case 'f':
 			for (char c : false_repr) {
 				if (in.next() != c) {
+					std::cerr << "fail at char = " << c << '\n';
 					return false;
 				}
 			}
