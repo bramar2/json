@@ -308,7 +308,7 @@ namespace json {
 			in.ptr -= 1;
 		}
 		JsonString key;
-		while(!end) {
+		while (!end) {
 			ch = in.next_iw();
 			if (ch != '"') {
 				return false;
@@ -327,6 +327,13 @@ namespace json {
 			}
 
 			new_members.emplace(std::move(key.value), std::move(value));
+
+			ch = in.next_iw();
+			end = (ch != ',');
+		}
+
+		if (ch != '}') {
+			return false;
 		}
 
 		this->members = std::move(new_members);
