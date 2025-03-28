@@ -158,14 +158,7 @@ namespace json {
 				in.ptr += 1;
 			}
 			going = true;
-			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
-			peek = in.peek();
-			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
-			peek = in.peek();
-			std::cerr << "Peeked char = " << peek << " [" << (int)peek << "]\n";
-			std::cerr << "going = " << std::boolalpha << going << '\n';
 			while (going && (tmp = in.next()) != '\0') {
-				std::cerr << "Encountered char = " << tmp << " [" << (int)tmp << "]\n";
 				switch (tmp) {
 				case '0': case '1': case '2': case '3': case '4':
 				case '5': case '6': case '7': case '8': case '9':
@@ -180,7 +173,6 @@ namespace json {
 					break;
 				}
 			}
-			std::cerr << "SC-len = " << len << '\n';
 			if (len == 0) {
 				return false;
 			}
