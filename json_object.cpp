@@ -3,25 +3,24 @@
 #include "json_string.hpp"
 
 namespace json {
-	bool JsonObject::write(std::ostream& out) const {
+	void JsonObject::write(std::ostream& out) const {
 		out << '{';
 		if (!this->members.empty()) {
 			auto it = this->members.begin(), end = this->members.end();
 
 			out << '"';
-			if (!JsonString::write_escaped(out, it->first)) return false;
+			JsonString::write_escaped(out, it->first);
 			out << "\":";
-			if (!it->second->write(out)) return false;
+			it->second->write(out);
 
 			for (++it; it != end; ++it) {
 				out << ",\"";
-				if (!JsonString::write_escaped(out, it->first)) return false;
+				JsonString::write_escaped(out, it->first);
 				out << "\":";
-				if (!it->second->write(out)) return false;
+				it->second->write(out);
 			}
 		}
 		out << '}';
-		return true;
 	}
 	
 	bool JsonObject::read(JsonInput& in) {
@@ -60,7 +59,6 @@ namespace json {
 			if (!value) {
 				return false;
 			}
-
 			new_members.emplace(std::move(key.value), std::move(value));
 
 			ch = in.next_iw();
@@ -74,6 +72,34 @@ namespace json {
 		}
 
 		this->members = std::move(new_members);
+		return true;
+	}
+
+
+	JsonElement* JsonObject::at(const std::string& key) const {
+		return this->members.at(key).get();
+	}
+
+	void JsonObject::clear() {
+		this->members.clear();
+	}
+
+	bool JsonObject::contains(const std::string& key) const {
+		return this->members.count(key);
+	}
+
+	bool JsonObject::erase(const std::string& key) {
+		return static_cast<bool>(this->members.erase(key));
+	}
+
+	bool JsonObject::set(const std::string& key, std::unique_ptr<JsonElement> value) {
+		if (auto it = this->members.find(key); it != this->members.end()) {
+			it->second = std::move(value);
+		} else if (JsonString::valid(key)) {
+			this->members.emplace(key, std::move(value));
+		} else {
+			return false;
+		}
 		return true;
 	}
 }

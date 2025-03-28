@@ -7,8 +7,9 @@ namespace json {
 		std::string value;
 
 		bool read(JsonInput& in) override;
-		bool write(std::ostream& out) const override;
+		void write(std::ostream& out) const override;
 
-		static bool write_escaped(std::ostream& out, std::string_view str);
+		static void write_escaped(std::ostream& out, std::string_view str);
+		static bool valid(std::string_view str);
 	};	
 }

@@ -2,7 +2,7 @@
 #include "json_parse.hpp"
 
 namespace json {
-	bool JsonArray::write(std::ostream& out) const {
+	void JsonArray::write(std::ostream& out) const {
 		out << '[';
 		const size_t sz = this->elements.size();
 		if (sz > 0) {
@@ -10,11 +10,10 @@ namespace json {
 
 			for (size_t i = 1; i < sz; i++) {
 				out << ',';
-				if (!this->elements[i]->write(out)) return false;
+				this->elements[i]->write(out);
 			}
 		}
 		out << ']';
-		return true;
 	}
 
 	bool JsonArray::read(JsonInput& in) {

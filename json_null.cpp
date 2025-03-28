@@ -1,9 +1,8 @@
 #include "json_null.hpp"
 
 namespace json {
-	bool JsonNull::write(std::ostream& out) const {
+	void JsonNull::write(std::ostream& out) const {
 		out << "null";
-		return true;
 	}
 
 	bool JsonNull::read(JsonInput& in) {

@@ -2,7 +2,22 @@
 
 namespace json {
 
-	bool JsonString::write_escaped(std::ostream& out, std::string_view str) {
+	bool JsonString::valid(std::string_view str) {
+		for (char c : str) {
+			switch (c) {
+			case '\b': case '\t': case '\n': case '\f': case '\r':
+				break;
+			default:
+				if (c < ' ') {
+					return false;
+				}
+				break;
+			}
+		}
+		return true;
+	}
+
+	void JsonString::write_escaped(std::ostream& out, std::string_view str) {
 		for (char c : str) {
 			switch (c) {
 			case '\b':
@@ -27,21 +42,16 @@ namespace json {
 				out << "\\\"";
 				break;
 			default:
-				if (c < ' ') {
-					return false;
-				}
 				out << c;
 				break;
 			}
 		}
-		return true;
 	}
 
-	bool JsonString::write(std::ostream& out) const {
+	void JsonString::write(std::ostream& out) const {
 		out << '"';
 		JsonString::write_escaped(out, this->value);
 		out << '"';
-		return true;
 	}
 	bool JsonString::read(JsonInput& in) {
 

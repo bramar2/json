@@ -1,9 +1,8 @@
 #include "json_bool.hpp"
 
 namespace json {
-	bool JsonBool::write(std::ostream& out) const {
+	void JsonBool::write(std::ostream& out) const {
 		out << (value ? "true" : "false");
-		return true;
 	}
 
 	bool JsonBool::read(JsonInput& in) {

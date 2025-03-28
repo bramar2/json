@@ -10,6 +10,6 @@ namespace json {
 		std::vector<std::unique_ptr<JsonElement>> elements;
 
 		bool read(JsonInput& in) override;
-		bool write(std::ostream& out) const override;
+		void write(std::ostream& out) const override;
 	};
 }

@@ -7,10 +7,16 @@
 
 namespace json {	
 	class JsonObject : public JsonElement {
-	public:
+	private:
 		std::unordered_map<std::string, std::unique_ptr<JsonElement>> members;
-
+	public:
 		bool read(JsonInput& in) override;
-		bool write(std::ostream& out) const override;
+		void write(std::ostream& out) const override;
+
+		JsonElement* at(const std::string& key) const;
+		void clear();
+		bool contains(const std::string& key) const;
+		bool erase(const std::string& key);
+		bool set(const std::string& key, std::unique_ptr<JsonElement> value);
 	};
 }

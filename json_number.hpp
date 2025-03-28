@@ -8,7 +8,7 @@ namespace json {
 		std::string value = "0";
 	public:
 		bool read(JsonInput& in) override;
-		bool write(std::ostream& out) const override;
+		void write(std::ostream& out) const override;
 
 		operator int() const;
 		operator long() const;

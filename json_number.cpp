@@ -1,9 +1,8 @@
 #include "json_number.hpp"
 
 namespace json {
-	bool JsonNumber::write(std::ostream& out) const {
+	void JsonNumber::write(std::ostream& out) const {
 		out << this->value;
-		return true;
 	}
 
 	bool JsonNumber::read(JsonInput& in) {
