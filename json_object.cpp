@@ -46,7 +46,7 @@ namespace json {
 			in.ptr -= 1;
 			key.read(in);
 
-			if (new_members.count(key.value)) {
+			if (new_members.count(key.str())) {
 				return false;
 			}
 
@@ -59,7 +59,7 @@ namespace json {
 			if (!value) {
 				return false;
 			}
-			new_members.emplace(std::move(key.value), std::move(value));
+			new_members.emplace(std::move(key.str()), std::move(value));
 
 			ch = in.next_iw();
 			if (ch != ',') {
