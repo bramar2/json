@@ -1,7 +1,7 @@
 #include "types.hpp"
-#include <cmath>
 
 namespace json {
+
 	bool write_escaped(std::ostream& out, const std::string& value) {
 		for (char c : value) {
 			switch (c) {
@@ -34,9 +34,91 @@ namespace json {
 	}
 
 	bool JsonNumber::write(std::ostream& out) const {
-		long double val = this->value
-		return false;
+		out << this->value;
+		return true;
 	}
+
+	bool JsonNumber::read(JsonInput& in) {
+		std::string newValue;
+		char ch = in.next();
+
+		if (ch == '-') {
+			newValue.push_back('-');
+			ch = in.next();
+		}
+		if (!std::isdigit(ch) || (ch == '0' && std::isdigit(in.peek()))) {
+			return false;
+		}
+		newValue.push_back(ch);
+
+		bool dot = false, exp = false, numAfterExp = false, valid = true, end = false;
+		while ( valid && !end && (ch = in.next()) != '\0') {
+			switch (ch) {
+			case '0': case '1': case '2': case '3': case '4':
+			case '5': case '6': case '7': case '8': case '9':
+				newValue.push_back(ch);
+				numAfterExp |= exp;
+				break;
+			case '.':
+				if (!dot && !exp && std::isdigit(in.peek())) {
+					dot = true;
+					newValue.push_back(ch);
+				} else {
+					valid = false;
+				}
+				break;
+			case 'e':
+			case 'E':
+				if (!exp) {
+					exp = true;
+					newValue.push_back('e');
+					if (char peek = in.peek(); peek == '-' || peek == '+') {
+						newValue.push_back(peek);
+						in.ptr += 1;
+					}
+				} else {
+					valid = false;
+				}
+				break;
+			default:
+				in.ptr -= 1;
+				end = true;
+				break;
+			}
+		}
+		valid &= !exp || numAfterExp;
+		if (valid) {
+			this->value = std::move(newValue);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	JsonNumber::operator int() const {
+		return std::stoi(this->value);
+	}
+	JsonNumber::operator long() const {
+		return std::stol(this->value);
+	}
+	JsonNumber::operator long long() const {
+		return std::stoll(this->value);
+	}
+	JsonNumber::operator unsigned long() const {
+		return std::stoul(this->value);
+	}
+	JsonNumber::operator unsigned long long() const {
+		return std::stoull(this->value);
+	}
+	JsonNumber::operator float() const {
+		return std::stof(this->value);
+	}
+	JsonNumber::operator double() const {
+		return std::stod(this->value);
+	}
+	JsonNumber::operator long double() const {
+		return std::stold(this->value);
+	}
+
 
 	bool JsonString::write(std::ostream& out) const {
 		out << '"';
@@ -77,116 +159,6 @@ namespace json {
 			}
 		}
 		out << '}';
-		return true;
-	}
-
-	bool JsonNumber::read(JsonInput& in) {
-		this->value = 0;
-		this->exp = 0;
-		bool sign = false, scientific = false;
-
-		char tmp = in.next();
-		if (tmp == '-') {
-			sign = true;
-			tmp = in.next();
-		}
-		if (std::isdigit(tmp)) {
-			this->value = (tmp - '0');
-		} else {
-			return false;
-		}
-		// if zero, next has to be . or e or ending, otherwise it is an extraneous zero (not allowed).
-		if (tmp == '0' && std::isdigit(in.peek())) {
-			return false;
-		}
-
-		bool going = true;
-		while (going && (tmp = in.next())) {
-			switch (tmp) {
-			case '0': case '1': case '2': case '3': case '4':
-			case '5': case '6': case '7': case '8': case '9':
-				this->value = 10 * this->value + (tmp - '0');
-				break;
-			case 'e':
-			case 'E':
-				scientific = true;
-				going = false;
-				break;
-			case '.':
-				this->decimal = 1;
-				going = false;
-				break;
-			default:
-				in.ptr -= 1;
-				going = false;
-				break;
-			}
-		}
-
-		if (this->decimal) {
-			if (!std::isdigit(in.peek())) {
-				return false;
-			}
-			going = true;
-			long double multiplier = 0.1;
-			size_t cnt = 0;
-			while (going && (tmp = in.next())) {
-				switch (tmp) {
-				case '0': case '1': case '2': case '3': case '4':
-				case '5': case '6': case '7': case '8': case '9':
-					cnt += 1;
-					this->value += multiplier * (tmp - '0');
-					multiplier *= 0.1;
-					break;
-				case 'e':
-				case 'E':
-					scientific = true;
-					going = false;
-					break;
-				default:
-					in.ptr -= 1;
-					going = false;
-					break;
-				}
-			}
-			if (cnt > 20) {
-				this->decimal = 20;
-			} else {
-				this->decimal = static_cast<unsigned char>(cnt);
-			}
-		}
-		if (scientific) {
-			char peek = in.peek();
-			bool exp_sign = (peek == '-');
-			size_t len = 0;
-			if (peek == '-' || peek == '+') {
-				in.ptr += 1;
-			}
-			going = true;
-			while (going && (tmp = in.next()) != '\0') {
-				switch (tmp) {
-				case '0': case '1': case '2': case '3': case '4':
-				case '5': case '6': case '7': case '8': case '9':
-					if(++len == 4) {
-						return false;
-					}
-					this->exp = 10 * this->exp + (tmp - '0');
-					break;
-				default:
-					in.ptr -= 1;
-					going = false;
-					break;
-				}
-			}
-			if (len == 0) {
-				return false;
-			}
-			if (exp_sign) {
-				this->exp *= -1;
-			}
-			this->value *= std::powl(10, this->exp);
-		}
-
 		return true;
 	}
 

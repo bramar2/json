@@ -10,17 +10,25 @@
 namespace json {
 	class JsonElement {
 	public:
-		virtual bool read(JsonInput& in);
-		virtual bool write(std::ostream& out) const;
+		virtual bool read(JsonInput& in) = 0;
+		virtual bool write(std::ostream& out) const = 0;
 	};
 	class JsonNumber : public JsonElement {
+	private:
+		std::string value = "0";
 	public:
-		long double value = 0;
-		int exp = 0;
-		unsigned char decimal = 0;
-
 		bool read(JsonInput& in) override;
 		bool write(std::ostream& out) const override;
+
+		operator int() const;
+		operator long() const;
+		operator long long() const;
+		operator unsigned long() const;
+		operator unsigned long long() const;
+
+		operator float() const;
+		operator double() const;
+		operator long double() const;
 	};
 	class JsonString : public JsonElement {
 	public:
