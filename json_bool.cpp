@@ -9,29 +9,17 @@ namespace json {
 	}
 
 	bool JsonBool::read(JsonInput& in) {
-		static constexpr std::string_view true_repr = "rue";
-		static constexpr std::string_view false_repr = "alse";
+		static constexpr std::string_view repr[] = {"alse", "rue"};
 		char ch = in.next();
-		switch (ch) {
-		case 't':
-			for (char c : true_repr) {
-				if (in.next() != c) {
-					return false;
-				}
-			}
-			this->value = true;
-			break;
-		case 'f':
-			for (char c : false_repr) {
-				if (in.next() != c) {
-					return false;
-				}
-			}
-			this->value = false;
-			break;
-		default:
+		if (ch != 't' && ch != 'f') {
 			return false;
 		}
+		for (char c : repr[ch == 't']) {
+			if (in.next() != c) {
+				return false;
+			}
+		}
+		this->value = (ch == 't');
 		return true;
 	}
 	JsonBool::operator bool() const {
