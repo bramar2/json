@@ -242,16 +242,17 @@ namespace json {
 		if (in.next_iw() != '[') {
 			return false;
 		}
-		std::vector<std::unique_ptr<JsonElement>> new_elements;
-
 		char ch = in.next_iw();
-		bool end = false;
+
 		if (ch == ']') {
-			end = true;
-		} else {
-			in.ptr -= 1;
+			this->elements.clear();
+			return true;
 		}
-		while (!end) {
+
+
+		in.ptr -= 1;
+		std::vector<std::unique_ptr<JsonElement>> new_elements;
+		while (true) {
 			ch = in.next_iw();
 			in.ptr -= 1;
 
@@ -263,7 +264,7 @@ namespace json {
 
 
 			ch = in.next_iw();
-			end = (ch != ',');
+			if (ch != ',') break;
 		}
 		if (ch != ']') {
 			return false;
@@ -298,17 +299,18 @@ namespace json {
 		if (in.next_iw() != '{') {
 			return false;
 		}
-		std::unordered_map<std::string, std::unique_ptr<JsonElement>> new_members;
-
 		char ch = in.next_iw();
-		bool end = false;
+
 		if (ch == '}') {
-			end = true;
-		} else {
-			in.ptr -= 1;
+			this->members.clear();
+			return true;
 		}
+
+
+		in.ptr -= 1;
+		std::unordered_map<std::string, std::unique_ptr<JsonElement>> new_members;
 		JsonString key;
-		while (!end) {
+		while (true) {
 			ch = in.next_iw();
 			if (ch != '"') {
 				return false;
@@ -333,7 +335,9 @@ namespace json {
 			new_members.emplace(std::move(key.value), std::move(value));
 
 			ch = in.next_iw();
-			end = (ch != ',');
+			if (ch != ',') {
+				break;
+			}
 		}
 
 		if (ch != '}') {
