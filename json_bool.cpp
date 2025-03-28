@@ -1,5 +1,3 @@
-#pragma once
-
 #include "json_bool.hpp"
 
 namespace json {

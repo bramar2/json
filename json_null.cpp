@@ -1,5 +1,3 @@
-#pragma once
-
 #include "json_null.hpp"
 
 namespace json {
