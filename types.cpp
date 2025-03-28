@@ -176,7 +176,7 @@ namespace json {
 				break;
 			}
 		}
-
+		this->value = std::move(newValue);
 		return true;
 	}
 
