@@ -178,7 +178,7 @@ namespace json {
 			switch (ch) {
 			case '\\':
 				ch = in.next();
-				switch (ch = in.next()) {
+				switch (ch) {
 				case 'b':
 					newValue.push_back('\b');
 					break;
