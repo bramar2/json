@@ -51,8 +51,8 @@ namespace json {
 		}
 		newValue.push_back(ch);
 
-		bool dot = false, exp = false, numAfterExp = false, valid = true, end = false;
-		while ( valid && !end && (ch = in.next()) != '\0') {
+		bool dot = false, exp = false, numAfterExp = false, end = false;
+		while ( !end && (ch = in.next()) != '\0') {
 			switch (ch) {
 			case '0': case '1': case '2': case '3': case '4':
 			case '5': case '6': case '7': case '8': case '9':
@@ -64,7 +64,7 @@ namespace json {
 					dot = true;
 					newValue.push_back(ch);
 				} else {
-					valid = false;
+					return false;
 				}
 				break;
 			case 'e':
@@ -77,7 +77,7 @@ namespace json {
 						in.ptr += 1;
 					}
 				} else {
-					valid = false;
+					return false;
 				}
 				break;
 			default:
@@ -86,13 +86,11 @@ namespace json {
 				break;
 			}
 		}
-		valid &= !exp || numAfterExp;
-		if (valid) {
-			this->value = std::move(newValue);
-			return true;
-		} else {
+		if (exp && !numAfterExp) {
 			return false;
 		}
+		this->value = std::move(newValue);
+		return true;
 	}
 	JsonNumber::operator int() const {
 		return std::stoi(this->value);
@@ -130,7 +128,56 @@ namespace json {
 		return true;
 	}
 	bool JsonString::read(JsonInput& in) {
-		return false;
+
+		if (in.next() != '"') {
+			return false;
+		}
+
+		std::string newValue;
+		char ch;
+		bool end = false;
+		while ( !end && (ch = in.next()) ) {
+			if (ch < ' ') {
+				return false;
+			}
+			switch (ch) {
+			case '\\':
+				switch ( (ch = in.next()) ) {
+				case 'b':
+					newValue.push_back('\b');
+					break;
+				case 't':
+					newValue.push_back('\t');
+					break;
+				case 'n':
+					newValue.push_back('\n');
+					break;
+				case 'f':
+					newValue.push_back('\f');
+					break;
+				case 'r':
+					newValue.push_back('\r');
+					break;
+				case '\\':
+					newValue.push_back('\\');
+					break;
+				case '"':
+					newValue.push_back('"');
+					break;
+				default:
+					return false;
+				}
+				break;
+			case '"':
+				end = true;
+				break;
+			default:
+				newValue.push_back(ch);
+				break;
+			}
+		}
+
+		return true;
 	}
 
 	bool JsonArray::write(std::ostream& out) const {
