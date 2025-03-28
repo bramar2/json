@@ -20,6 +20,6 @@ namespace json {
 		operator double() const;
 		operator long double() const;
 
-		std::string to_string() const;
+		const std::string& str() const;
 	};
 }

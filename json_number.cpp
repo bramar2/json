@@ -83,7 +83,7 @@ namespace json {
 	JsonNumber::operator long double() const {
 		return std::stold(this->value);
 	}
-	std::string JsonNumber::to_string() const {
+	const std::string& JsonNumber::str() const {
 		return this->value;
 	}
 }
