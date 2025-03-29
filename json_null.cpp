@@ -19,4 +19,8 @@ namespace json {
 		}
 		return true;
 	}
+
+	std::unique_ptr<JsonElement> JsonNull::clone() const {
+		return std::make_unique<JsonNull>();
+	}
 }

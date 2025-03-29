@@ -8,5 +8,6 @@ namespace json {
 		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
+		std::unique_ptr<JsonElement> clone() const override;
 	};
 }

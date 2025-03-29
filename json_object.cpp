@@ -4,6 +4,15 @@
 
 namespace json {
 
+	JsonObject::JsonObject() {}
+	JsonObject::JsonObject(const JsonObject& other) {
+		this->members.reserve(other.members.size());
+		for (const auto& [key, element] : other.members) {
+			this->members.emplace(key, element->clone());
+		}
+	}
+	JsonObject::JsonObject(JsonObject&& other) : members(std::move(other.members)) {}
+
 	JsonType JsonObject::type() const {
 		return JsonType::Object;
 	}
@@ -78,6 +87,15 @@ namespace json {
 
 		this->members = std::move(new_members);
 		return true;
+	}
+
+	std::unique_ptr<JsonElement> JsonObject::clone() const {
+		std::unique_ptr<JsonObject> res = std::make_unique<JsonObject>();
+		res->members.reserve(this->members.size());
+		for (const auto& [key, element] : this->members) {
+			res->members.emplace(key, element->clone());
+		}
+		return res;
 	}
 
 

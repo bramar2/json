@@ -2,12 +2,14 @@
 
 namespace json {
 
+	JsonBool::JsonBool(bool c_value) : value(c_value) {}
+
 	JsonType JsonBool::type() const {
 		return JsonType::Bool;
 	}
 
 	void JsonBool::write(std::ostream& out) const {
-		out << (value ? "true" : "false");
+		out << (this->value ? "true" : "false");
 	}
 
 	bool JsonBool::read(JsonInput& in) {
@@ -24,6 +26,11 @@ namespace json {
 		this->value = (ch == 't');
 		return true;
 	}
+
+	std::unique_ptr<JsonElement> JsonBool::clone() const {
+		return std::make_unique<JsonBool>(this->value);
+	}
+
 	JsonBool::operator bool() const {
 		return this->value;
 	}

@@ -6,9 +6,14 @@ namespace json {
 	private:
 		std::string value;
 	public:
+		JsonString();
+		JsonString(const JsonString& other);
+		JsonString(JsonString&& other);
+
 		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
+		std::unique_ptr<JsonElement> clone() const override;
 
 		bool set(std::string_view newValue);
 		bool set(std::string newValue);

@@ -5,11 +5,16 @@
 namespace json {
 	class JsonNumber : public JsonElement {
 	private:
-		std::string value = "0";
+		std::string value;
 	public:
+		JsonNumber();
+		JsonNumber(const JsonNumber& other);
+		JsonNumber(JsonNumber&& other);
+
 		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
+		std::unique_ptr<JsonElement> clone() const override;
 
 		operator int() const;
 		operator long() const;

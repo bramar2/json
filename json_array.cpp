@@ -3,6 +3,16 @@
 
 namespace json {
 
+	JsonArray::JsonArray() {}
+	JsonArray::JsonArray(const JsonArray& other) {
+		this->elements.reserve(other.elements.size());
+		for (const auto& element : other.elements) {
+			this->elements.push_back(element->clone());
+		}
+	}
+	JsonArray::JsonArray(JsonArray&& other) : elements(std::move(other.elements)) {}
+
+
 	JsonType JsonArray::type() const {
 		return JsonType::Array;
 	}
@@ -55,5 +65,13 @@ namespace json {
 
 		this->elements = std::move(new_elements);
 		return true;
+	}
+	std::unique_ptr<JsonElement> JsonArray::clone() const {
+		std::unique_ptr<JsonArray> res = std::make_unique<JsonArray>();
+		res->elements.reserve(this->elements.size());
+		for (const auto& element : this->elements) {
+			res->elements.push_back(element->clone());
+		}
+		return res;
 	}
 }

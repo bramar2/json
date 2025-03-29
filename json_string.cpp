@@ -48,6 +48,10 @@ namespace json {
 		}
 	}
 
+	JsonString::JsonString() {}
+	JsonString::JsonString(const JsonString& other) : value(other.value) {}
+	JsonString::JsonString(JsonString&& other) : value(std::move(other.value)) {}
+
 	JsonType JsonString::type() const {
 		return JsonType::String;
 	}
@@ -133,6 +137,12 @@ namespace json {
 		} else {
 			return false;
 		}
+	}
+
+	std::unique_ptr<JsonElement> JsonString::clone() const {
+		std::unique_ptr<JsonString> ptr = std::make_unique<JsonString>();
+		ptr->value = this->value;
+		return ptr;
 	}
 
 	const std::string& JsonString::str() {

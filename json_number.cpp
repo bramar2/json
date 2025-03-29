@@ -2,6 +2,10 @@
 
 namespace json {
 
+	JsonNumber::JsonNumber() : value("0") {}
+	JsonNumber::JsonNumber(const JsonNumber& other) : value(other.value) {}
+	JsonNumber::JsonNumber(JsonNumber&& other) : value(std::move(other.value)) {}
+
 	JsonType JsonNumber::type() const {
 		return JsonType::Number;
 	}
@@ -64,6 +68,13 @@ namespace json {
 		this->value = std::move(newValue);
 		return true;
 	}
+
+	std::unique_ptr<JsonElement> JsonNumber::clone() const {
+		std::unique_ptr<JsonNumber> ptr = std::make_unique<JsonNumber>();
+		ptr->value = this->value;
+		return ptr;
+	}
+
 	JsonNumber::operator int() const {
 		return std::stoi(this->value);
 	}
