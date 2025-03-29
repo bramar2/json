@@ -14,5 +14,6 @@ add_executable(json test.cpp json.hpp input.cpp input.hpp
 	json_number.cpp json_number.hpp
 	json_object.cpp json_object.hpp
 	json_string.cpp json_string.hpp
+	json_type.hpp
 	parse.cpp parse.hpp
-	json_types.hpp)
+	path.cpp path.hpp)
