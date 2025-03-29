@@ -2,6 +2,6 @@
 
 namespace json {
 	enum class JsonType {
-		Array, Bool, Element, Null, Number, Object, String
+		Array, Bool, Null, Number, Object, String
 	};
 }
