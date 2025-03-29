@@ -73,7 +73,7 @@ namespace json {
 			if (!value) {
 				return false;
 			}
-			new_members.emplace(std::move(key.str()), std::move(value));
+			new_members.emplace(key.str(), std::move(value));
 
 			ch = in.next_iw();
 			if (ch != ',') {
