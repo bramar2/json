@@ -31,8 +31,14 @@ if (auto* jsonNull = dynamic_cast<json::JsonNull*>(json.get())) {
 	std::cout << "Received a number: " << num->str() << '\n';
 } else if (auto* arr = dynamic_cast<json::JsonArray*>(json.get())) {
 	std::cout << "Received an array\n";
+	for (auto& elements : arr->elements) {
+		// do stuff
+	}
 } else if (auto* obj = dynamic_cast<json::JsonObject*>(json.get())) {
 	std::cout << "Received an object\n";
+	for (auto& [key, element] : *obj) {
+		// do stuff
+	}
 } else {
 	std::unreachable();
 }
