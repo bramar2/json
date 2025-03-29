@@ -18,5 +18,8 @@ namespace json {
 		bool contains(const std::string& key) const;
 		bool erase(const std::string& key);
 		bool set(const std::string& key, std::unique_ptr<JsonElement> value);
+
+		std::unordered_map<std::string, std::unique_ptr<JsonElement>>::iterator begin();
+		std::unordered_map<std::string, std::unique_ptr<JsonElement>>::iterator end();
 	};
 }

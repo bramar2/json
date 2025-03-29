@@ -102,4 +102,12 @@ namespace json {
 		}
 		return true;
 	}
+
+	std::unordered_map<std::string, std::unique_ptr<JsonElement>>::iterator JsonObject::begin() {
+		return this->members.begin();
+	}
+	
+	std::unordered_map<std::string, std::unique_ptr<JsonElement>>::iterator JsonObject::end() {
+		return this->members.end();
+	}
 }
