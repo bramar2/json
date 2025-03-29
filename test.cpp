@@ -1,6 +1,4 @@
 #include "json.hpp"
-#include "json_array.hpp"
-#include "json_object.hpp"
 	
 #include <iostream>
 #include <sstream>
@@ -57,6 +55,25 @@ void example(std::istream& in, std::ostream& out) {
 		break;
 	default:
 		std::unreachable();
+	}
+
+	// Pathing
+	static const json::JsonPath CONST_JSON_PATH = json::JsonPath::create("$.myPath")
+			.or_else([]() -> std::optional<json::JsonPath> { throw std::runtime_error("invalid json path in CONST_JSON_PATH"); })
+			.value();
+	std::optional<json::JsonPath> pathOpt = json::JsonPath::create("$.test[0].mykey[\"key with spaces\"]");
+	if (!pathOpt) {
+		throw "invalid path";
+	}
+	json::JsonPath path = std::move(pathOpt.value());
+	json::JsonElement* dest = path.query(json.get());
+
+	if (!dest) {
+		throw "json doesnt match path";
+	} else {
+		std::cout << "Received destination from pathing: ";
+		dest->write(std::cout);
+		std::cout << '\n';
 	}
 
 	// Writing
