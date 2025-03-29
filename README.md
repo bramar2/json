@@ -26,25 +26,25 @@ case json::JsonType::Null:
 	break;
 case json::JsonType::Bool:
 	{
-		json::JsonBool* jsonBool = dynamic_cast<json::JsonBool*>(json.get());
+		json::JsonBool* jsonBool = static_cast<json::JsonBool*>(json.get());
 		std::cout << "Received a bool: " << std::boolalpha << (bool) (*jsonBool) << '\n';
 	}
 	break;
 case json::JsonType::String:
 	{
-		json::JsonString* jsonStr = dynamic_cast<json::JsonString*>(json.get());
+		json::JsonString* jsonStr = static_cast<json::JsonString*>(json.get());
 		std::cout << "Received a string: " << jsonStr->str() << '\n';
 	}
 	break;
 case json::JsonType::Number:
 	{
-		json::JsonNumber* jsonNum = dynamic_cast<json::JsonNumber*>(json.get());
+		json::JsonNumber* jsonNum = static_cast<json::JsonNumber*>(json.get());
 		std::cout << "Received a number: " << jsonNum->str() << '\n';
 	}
 	break;
 case json::JsonType::Array:
 	{
-		json::JsonArray* arr = dynamic_cast<json::JsonArray*>(json.get());
+		json::JsonArray* arr = static_cast<json::JsonArray*>(json.get());
 		std::cout << "Received an array\n";
 		for (auto& element : arr->elements) {
 			// element: std::unique_ptr<json::JsonElement>
@@ -54,7 +54,7 @@ case json::JsonType::Array:
 	break;
 case json::JsonType::Object:
 	{
-		json::JsonObject* obj = dynamic_cast<json::JsonObject*>(json.get());
+		json::JsonObject* obj = static_cast<json::JsonObject*>(json.get());
 		std::cout << "Received an object\n";
 		for (auto& [key, element] : *obj) {
 			// key: str, element: std::unique_ptr<json::JsonElement>
