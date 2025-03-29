@@ -85,16 +85,22 @@ int main() {
 	std::string path;
 	std::cout << "Query:\n";
 	while (std::getline(std::cin, path)) {
-		json::JsonElement* result = json::path(&obj, path);
-		std::cout << "--- Pathing result ---\n";
-		std::cout << "Result: ";
-		if (result == nullptr) {
-			std::cout << "nullptr";
+		std::optional<json::JsonPath> jsonPathOpt = json::JsonPath::create(path);
+
+		if (!jsonPathOpt) {
+			std::cout << "Not a valid query!\n";
 		} else {
-			result->write(std::cout);
+			json::JsonElement* result = jsonPathOpt.value().query(&obj);
+			std::cout << "--- Pathing result ---\n";
+			std::cout << "Result: ";
+			if (result == nullptr) {
+				std::cout << "nullptr";
+			} else {
+				result->write(std::cout);
+			}
+			std::cout << '\n';
+			std::cout << "--- Pathing result ---\n";
 		}
-		std::cout << '\n';
-		std::cout << "--- Pathing result ---\n";
 		std::cout << "Query:\n";
 	}
 
