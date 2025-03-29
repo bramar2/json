@@ -3,6 +3,11 @@
 #include "parse.hpp"
 
 namespace json {
+
+	JsonType JsonObject::type() const {
+		return JsonType::Object;
+	}
+
 	void JsonObject::write(std::ostream& out) const {
 		out << '{';
 		if (!this->members.empty()) {

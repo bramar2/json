@@ -1,6 +1,11 @@
 #include "json_bool.hpp"
 
 namespace json {
+
+	JsonType JsonBool::type() const {
+		return JsonType::Bool;
+	}
+
 	void JsonBool::write(std::ostream& out) const {
 		out << (value ? "true" : "false");
 	}

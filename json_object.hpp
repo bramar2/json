@@ -10,6 +10,7 @@ namespace json {
 	private:
 		std::unordered_map<std::string, std::unique_ptr<JsonElement>> members;
 	public:
+		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
 

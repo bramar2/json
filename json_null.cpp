@@ -1,6 +1,11 @@
 #include "json_null.hpp"
 
 namespace json {
+
+	JsonType JsonNull::type() const {
+		return JsonType::Null;
+	}
+
 	void JsonNull::write(std::ostream& out) const {
 		out << "null";
 	}

@@ -9,6 +9,7 @@ namespace json {
 	public:
 		std::vector<std::unique_ptr<JsonElement>> elements;
 
+		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
 	};

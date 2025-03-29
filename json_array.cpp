@@ -2,6 +2,11 @@
 #include "parse.hpp"
 
 namespace json {
+
+	JsonType JsonArray::type() const {
+		return JsonType::Array;
+	}
+
 	void JsonArray::write(std::ostream& out) const {
 		out << '[';
 		const size_t sz = this->elements.size();

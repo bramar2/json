@@ -48,6 +48,10 @@ namespace json {
 		}
 	}
 
+	JsonType JsonString::type() const {
+		return JsonType::String;
+	}
+
 	void JsonString::write(std::ostream& out) const {
 		out << '"';
 		JsonString::write_escaped(out, this->value);

@@ -5,7 +5,8 @@
 namespace json {
 	class JsonNull : public JsonElement {
 	public:
-		bool read(JsonInput& in);
-		void write(std::ostream& out) const;
+		JsonType type() const override;
+		bool read(JsonInput& in) override;
+		void write(std::ostream& out) const override;
 	};
 }

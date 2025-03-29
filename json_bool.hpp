@@ -7,6 +7,7 @@ namespace json {
 	public:
 		bool value = false;
 
+		JsonType type() const override;
 		bool read(JsonInput& in) override;
 		void write(std::ostream& out) const override;
 

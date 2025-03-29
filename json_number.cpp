@@ -1,6 +1,11 @@
 #include "json_number.hpp"
 
 namespace json {
+
+	JsonType JsonNumber::type() const {
+		return JsonType::Number;
+	}
+
 	void JsonNumber::write(std::ostream& out) const {
 		out << this->value;
 	}
