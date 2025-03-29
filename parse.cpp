@@ -1,5 +1,10 @@
 #include "parse.hpp"
-#include "json_types.hpp"
+#include "json_array.hpp"
+#include "json_bool.hpp"
+#include "json_null.hpp"
+#include "json_number.hpp"
+#include "json_object.hpp"
+#include "json_string.hpp"
 
 namespace json {
 	std::unique_ptr<JsonElement> parse(JsonInput& in, bool _partial) {
