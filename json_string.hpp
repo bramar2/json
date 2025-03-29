@@ -10,6 +10,7 @@ namespace json {
 		void write(std::ostream& out) const override;
 
 		bool set(std::string_view newValue);
+		bool set(std::string newValue);
 		const std::string& str();
 
 		static void write_escaped(std::ostream& out, std::string_view str);
