@@ -1,6 +1,6 @@
 #include "json_object.hpp"
-#include "json_parse.hpp"
 #include "json_string.hpp"
+#include "parse.hpp"
 
 namespace json {
 	void JsonObject::write(std::ostream& out) const {

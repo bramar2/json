@@ -1,5 +1,5 @@
 #include "json_array.hpp"
-#include "json_parse.hpp"
+#include "parse.hpp"
 
 namespace json {
 	void JsonArray::write(std::ostream& out) const {
