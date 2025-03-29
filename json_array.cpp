@@ -34,7 +34,7 @@ namespace json {
 			ch = in.next_iw();
 			in.ptr -= 1;
 
-			std::unique_ptr<JsonElement> element = json::parse(in);
+			std::unique_ptr<JsonElement> element = json::parse(in, true);
 			if (!element) {
 				return false;
 			}

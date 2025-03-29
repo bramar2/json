@@ -55,7 +55,7 @@ namespace json {
 				return false;
 			}
 
-			std::unique_ptr<JsonElement> value = json::parse(in);
+			std::unique_ptr<JsonElement> value = json::parse(in, true);
 			if (!value) {
 				return false;
 			}

@@ -5,5 +5,5 @@
 #include <memory>
 
 namespace json {
-	std::unique_ptr<JsonElement> parse(JsonInput& in);
+	std::unique_ptr<JsonElement> parse(JsonInput& in, bool _partial = false);
 }
