@@ -15,7 +15,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonNumber>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		case '"':
@@ -23,7 +23,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonString>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		case '[':
@@ -31,7 +31,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonArray>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		case '{':
@@ -39,7 +39,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonObject>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		case 'n':
@@ -47,7 +47,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonNull>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		case 't':
@@ -56,7 +56,7 @@ namespace json {
 				in.ptr -= 1;
 				std::unique_ptr<JsonElement> ptr = std::make_unique<JsonBool>();
 				if (!ptr->read(in)) return nullptr;
-				if (!_partial & in.next_iw()) return nullptr;
+				if (!_partial && in.next_iw()) return nullptr;
 				return ptr;
 			}
 		default:
