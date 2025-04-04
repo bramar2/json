@@ -18,7 +18,7 @@ namespace json {
 
 				JsonObject* obj = static_cast<JsonObject*>(root);
 				const std::string& key = std::get<std::string>(next);
-				std::cerr << "Visiting key: \"" << key << "\"\n";
+				
 				if (!obj->contains(key)) {
 					return nullptr;
 				}
@@ -56,7 +56,7 @@ namespace json {
 					res.path.emplace_back("");
 					std::string& key = std::get<std::string>(res.path.back());
 					for (++ptr; ptr < sz; ++ptr) {
-						if (std::isalnum(query[ptr])) {
+						if (std::isalnum(query[ptr]) || query[ptr] == '_') {
 							key.push_back(query[ptr]);
 						} else {
 							break;
